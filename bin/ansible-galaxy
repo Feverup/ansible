@@ -846,10 +846,20 @@ def execute_install(args, options, parser):
                         role["version"] = 'master'
                 elif role['version'] != 'master':
 
+                    from pkg_resources import VERSION, Requirement
+                    match = VERSION(role["version"])
+                    if match :
+                        specs = match.group(*(1,2))
+                    else :
+                        specs = ('==', role["version"])
+                    reqs = Requirement(role["name"], (specs,), [])
+
                     from pkg_resources import parse_requirements
                     pkgs, = parse_requirements(role["name"]+role["version"])
                     if not pkgs.specs :
                         pkgs, = parse_requirements("%s==%s" % (role["name"], role["version"]))
+
+                    assert reqs == pkgs
 
                     role_versions = filter( lambda v : v['name'] in pkgs , role_versions )
 
