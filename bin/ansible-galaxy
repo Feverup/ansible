@@ -851,6 +851,8 @@ def execute_install(args, options, parser):
                     if not pkgs.specs :
                         pkgs, = parse_requirements("%s==%s" % (role["name"], role["version"]))
 
+                    role_versions = filter( lambda v : v['name'] in pkgs , role_versions )
+
                     if role_versions and role["version"] not in [a.get('name', None) for a in role_versions]:
                         print 'role is %s' % role
                         print "- the specified version (%s) was not found in the list of available versions (%s)." % (role['version'], role_versions)
